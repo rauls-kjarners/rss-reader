@@ -1,0 +1,10 @@
+includes:
+    - ./vendor/phpstan/phpstan-symfony/extension.neon
+    - ./vendor/phpstan/phpstan-doctrine/extension.neon
+parameters:
+    src_dir: %rootDir%/../../../src/
+    tmpDir: %rootDir%/../../../var/cache/dev/phpstan/
+    excludes_analyse:
+        - %src_dir%/Migrations/*
+    symfony:
+        container_xml_path: %rootDir%/../../../var/cache/dev/srcApp_KernelDevDebugContainer.xml
