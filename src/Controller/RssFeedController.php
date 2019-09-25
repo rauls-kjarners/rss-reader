@@ -19,6 +19,8 @@ final class RssFeedController extends AbstractController
      */
     public function index(RegisterFeed $registerFeed): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         return $this->render('feed/feed.html.twig', [
             'popularWords' => $registerFeed->getPopularWords(),
             'entries'      => $registerFeed->getEntries(),
