@@ -54,8 +54,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     }
 
     /**
-     * @param Request $request
-     * @return bool
+     * @inheritdoc
      */
     public function supports(Request $request)
     {
@@ -64,8 +63,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     }
 
     /**
-     * @param Request $request
-     * @return array|mixed
+     * @inheritdoc
      */
     public function getCredentials(Request $request)
     {
@@ -84,9 +82,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     }
 
     /**
-     * @param mixed                 $credentials
-     * @param UserProviderInterface $userProvider
-     * @return User|object|UserInterface|null
+     * @inheritdoc
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
@@ -108,9 +104,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     }
 
     /**
-     * @param               $credentials
-     * @param UserInterface $user
-     * @return bool
+     * @inheritdoc
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
@@ -118,11 +112,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     }
 
     /**
-     * @param Request        $request
-     * @param TokenInterface $token
-     * @param string         $providerKey
-     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response|null
-     * @throws \Exception
+     * @inheritdoc
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
@@ -134,7 +124,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     protected function getLoginUrl()
     {
