@@ -23,4 +23,4 @@ eval("// extracted by mini-css-extract-plugin\n\n//# sourceURL=webpack:///./asse
 
 /***/ })
 
-},[["./assets/js/app.js","runtime","vendors~app"]]]);
+},[["./assets/js/app.js","runtime","vendors~app~user","vendors~app"]]]);

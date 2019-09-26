@@ -4,22 +4,29 @@ namespace App\Service;
 
 use App\Throwable\Service\RegisterFeedException;
 
-// todo:: db, command to sync or cache, tests
 class RegisterFeed
 {
-    private CONST FEED_URL   = 'https://www.theregister.co.uk/software/headlines.atom';
     private CONST WORD_LIMIT = 10;
 
-    /** @var string|false $feed */
-    private $feed;
+    /** @var \SimpleXMLElement feedEntries */
+    private $feedEntries;
 
     /** @var CommonWords $commonWords */
     private $commonWords;
 
-    public function __construct(CommonWords $commonWords)
+    /**
+     * @param CommonWords $commonWords
+     * @param string      $feedUrl
+     */
+    public function __construct(CommonWords $commonWords, string $feedUrl)
     {
-        $this->feed        = simplexml_load_string(file_get_contents(self::FEED_URL));
         $this->commonWords = $commonWords;
+
+        try {
+            $this->feedEntries = simplexml_load_string(file_get_contents($feedUrl))->entry;
+        } catch (\Throwable $exception) {
+            throw new RegisterFeedException($exception->getMessage());
+        }
     }
 
     /**
@@ -29,7 +36,7 @@ class RegisterFeed
     public function getPopularWords(int $limit = self::WORD_LIMIT): array
     {
         $allTexts = '';
-        foreach ($this->getEntriesXml() as $entry) {
+        foreach ($this->feedEntries as $entry) {
             $entry = (array) $entry;
             if (empty($entry['title']) || empty($entry['summary'])) {
                 continue;
@@ -46,7 +53,7 @@ class RegisterFeed
         }
 
         $countedWords  = str_word_count(utf8_decode($allTexts), 1);
-        $filteredWords = array_diff($countedWords, $this->commonWords->getWords());
+        $filteredWords = array_udiff($countedWords, $this->commonWords->getWords(), 'strcasecmp');
         $words         = array_count_values($filteredWords);
 
         arsort($words);
@@ -60,8 +67,8 @@ class RegisterFeed
      */
     public function getEntries(): array
     {
-        $feedEntries = [];
-        foreach ($this->getEntriesXml() as $entry) {
+        $formattedEntries = [];
+        foreach ($this->feedEntries as $entry) {
             $entry = (array) $entry;
             if (empty($entry['title']) || empty($entry['summary']) || empty($entry['updated'])) {
                 continue;
@@ -70,7 +77,7 @@ class RegisterFeed
             $author = (array) ($entry['author'] ?? []);
             $link   = (array) ($entry['link'] ?? []);
 
-            $feedEntries[] = [
+            $formattedEntries[] = [
                 'updated'    => new \DateTime($entry['updated']),
                 'authorName' => empty($author['name']) ? 'Anonymous' : $author['name'],
                 'authorUri'  => $author['uri'] ?? null,
@@ -80,18 +87,6 @@ class RegisterFeed
             ];
         }
 
-        return $feedEntries;
-    }
-
-    /**
-     * @return \SimpleXMLElement
-     */
-    private function getEntriesXml(): \SimpleXMLElement
-    {
-        if (!$this->feed) {
-            throw new RegisterFeedException();
-        }
-
-        return $this->feed->entry;
+        return $formattedEntries;
     }
 }

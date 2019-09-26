@@ -3,11 +3,19 @@
     "app": {
       "js": [
         "/build/runtime.js",
+        "/build/vendors~app~user.js",
         "/build/vendors~app.js",
         "/build/app.js"
       ],
       "css": [
         "/build/app.css"
+      ]
+    },
+    "user": {
+      "js": [
+        "/build/runtime.js",
+        "/build/vendors~app~user.js",
+        "/build/user.js"
       ]
     }
   }

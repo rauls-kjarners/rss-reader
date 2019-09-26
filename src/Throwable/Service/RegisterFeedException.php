@@ -4,8 +4,11 @@ namespace App\Throwable\Service;
 
 class RegisterFeedException extends \RuntimeException
 {
-    public function __construct()
+    /**
+     * @param string $reason
+     */
+    public function __construct(string $reason)
     {
-        parent::__construct('Could not read the registry feed');
+        parent::__construct(sprintf('Could not read the registry feed because %s', $reason));
     }
 }

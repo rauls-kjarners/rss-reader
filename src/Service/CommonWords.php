@@ -4,10 +4,8 @@ namespace App\Service;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-// todo:: db, command to sync or cache, tests
 class CommonWords
 {
-    private CONST FEED_URL       = 'https://en.wikipedia.org/wiki/Most_common_words_in_English';
     private CONST WORD_LIMIT     = 50;
     private CONST EXCLUDED_WORDS = [
         'the',
@@ -62,12 +60,15 @@ class CommonWords
         'me'
     ];
 
-    /** @var string|false $feed */
-    private $feed;
+    /** @var string feedUrl */
+    private $feedUrl;
 
-    public function __construct()
+    /**
+     * @param string $feedUrl
+     */
+    public function __construct(string $feedUrl)
     {
-        $this->feed = file_get_contents(self::FEED_URL);
+        $this->feedUrl = $feedUrl;
     }
 
     /**
@@ -76,35 +77,21 @@ class CommonWords
      */
     public function getWords(int $limit = self::WORD_LIMIT): array
     {
-        if (!$this->feed) {
-            return $this->getDeafultExcludedWords($limit);
-        }
-
         try {
-            $words = (new Crawler($this->feed))
+            $words = (new Crawler($this->feedUrl))
                 ->filter('td')
                 ->children('a.extiw')
-                ->slice(0, $limit)
                 ->each(function (Crawler $node) {
                     return $node->text();
                 });
         } catch (\Throwable $exception) {
-            return $this->getDeafultExcludedWords($limit);
+            $words = self::EXCLUDED_WORDS;
         }
 
-        return empty($words) ? $this->getDeafultExcludedWords($limit) : $words;
-    }
-
-    /**
-     * @param int $limit
-     * @return array
-     */
-    private function getDeafultExcludedWords(int $limit): array
-    {
-        if ($limit < 50) {
-            return array_slice(self::EXCLUDED_WORDS, 0, $limit);
+        if (empty($words)) {
+            $words = self::EXCLUDED_WORDS;
         }
 
-        return self::EXCLUDED_WORDS;
+        return array_slice($words, 0, $limit);
     }
 }

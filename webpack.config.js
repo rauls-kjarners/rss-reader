@@ -17,6 +17,7 @@ Encore
     // caching strategies. Use Encore.isProduction() to enable it only for production.
     .enableVersioning(false)
     .addEntry('app', './assets/js/app.js')
+    .addEntry('user', './assets/js/user.js')
     .splitEntryChunks()
     .enableSingleRuntimeChunk()
     .enableIntegrityHashes(Encore.isProduction())

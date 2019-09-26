@@ -5,13 +5,22 @@
 {% block body %}
     <h1>Register</h1>
 
+    <div id="user-registration-alert" class="alert alert-warning">
+        There is already an account with this email
+    </div>
+
     {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.email, {'attr': {'data-url': path('app_user_check_email')}}) }}
         {{ form_row(registrationForm.plainPassword) }}
 
         <button class="btn btn-success">Register</button>
+        <button class="btn btn-link">
+            <a href="{{ path('app_login') }}">Login</a>
+        </button>
     {{ form_end(registrationForm) }}
-    <button class="btn btn-link">
-        <a href="{{ path('app_login') }}">Login</a>
-    </button>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('user') }}
 {% endblock %}
