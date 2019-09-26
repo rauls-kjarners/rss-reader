@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <hr />
+    <p class="text-center">
+        {% for word, count in popularWords %}
+            <button class="btn btn-primary">
+                {{ word }} <span class="badge badge-light">{{ count }}</span>
+            </button>
+        {% endfor %}
+    </p>
+    <hr />
+    <div>
+        {% for entry in entries %}
+            <div class="card">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <a href="{{ entry['link'] }}">{{ entry['title'] }}</a>
+                        | {{ entry['updated']|date('m/d/Y') }}</li>
+                    <li class="list-group-item">
+                        Author: <a href="{{ entry['authorUri'] }}">{{ entry['authorName'] }}</a>
+                    </li>
+                    <li class="list-group-item">{{ entry['summary'] }}</li>
+                </ul>
+            </div>
+            <hr />
+        {% endfor %}
+    </div>
+{% endblock %}
